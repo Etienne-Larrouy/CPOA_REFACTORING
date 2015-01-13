@@ -1,10 +1,7 @@
 package com.codurance.training.tasks;
 
 import static java.lang.System.lineSeparator;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
-
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -82,7 +79,7 @@ public final class ApplicationTest {
 		int length = expectedOutput.length();
 		char[] buffer = new char[length];
 		outReader.read(buffer, 0, length);
-		assertThat(String.valueOf(buffer), is(expectedOutput));
+		assertEquals(String.valueOf(buffer), expectedOutput);
 	}
 
 	private void readLines(String... expectedOutput) throws IOException {
