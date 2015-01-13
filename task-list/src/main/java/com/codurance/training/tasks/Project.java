@@ -18,6 +18,10 @@ public class Project {
 		this.projectName = projectName;
 		this.idTask = 1;
 	}    
+    
+    public ArrayList<Task> getTasks(){
+    	return this.listTask;
+    }
 
 	public String getProjectName() {
 		return projectName;
