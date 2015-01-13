@@ -2,6 +2,8 @@ package com.codurance.training.tasks;
 
 import static java.lang.System.lineSeparator;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 
 
 import java.io.BufferedReader;
