@@ -157,12 +157,14 @@ public final class ProjectList implements Runnable {
     private void setDone(String projectName, String idString, boolean done) {
         int id = Integer.parseInt(idString);
         for (Project projet : projectList) {
-            for (Task task : projet.getTasks()) {
-                if (task.getId() == id) {
-                    task.setDone(done);
-                    return;
-                }
-            }
+        	if (projectName.equals(projet.getProjectName())){
+	            for (Task task : projet.getTasks()) {
+	                if (task.getId() == id) {
+	                    task.setDone(done);
+	                    return;
+	                }
+	            }
+        	}
         }
         out.printf("Could not find a task with an ID of %d.", id);
         out.println();
