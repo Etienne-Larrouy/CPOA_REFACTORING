@@ -55,17 +55,17 @@ public final class ApplicationTest {
 		execute("add task training Interaction-Driven Design");
 
 		execute("check secrets 1");
-		execute("check secrets 3");
-		execute("check secrets 5");
-		execute("check secrets 6");
+		execute("check training 1");
+		execute("check training 3");
+		execute("check training 4");
 
 		execute("show");
 		readLines("secrets", "    [x] 1: Eat more donuts.",
 				"    [ ] 2: Destroy all humans.", "", "training",
-				"    [x] 3: Four Elements of Simple Design",
-				"    [ ] 4: SOLID", "    [x] 5: Coupling and Cohesion",
-				"    [x] 6: Primitive Obsession", "    [ ] 7: Outside-In TDD",
-				"    [ ] 8: Interaction-Driven Design", "");
+				"    [x] 1: Four Elements of Simple Design",
+				"    [ ] 2: SOLID", "    [x] 3: Coupling and Cohesion",
+				"    [x] 4: Primitive Obsession", "    [ ] 5: Outside-In TDD",
+				"    [ ] 6: Interaction-Driven Design", "");
 		
 		execute("deadLine secrets 1 12/12/1900");
 		readLines("deadLine : 12/12/1900");

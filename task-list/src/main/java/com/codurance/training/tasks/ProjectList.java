@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public final class ProjectList implements Runnable {
     private static final String QUIT = "quit";
@@ -15,8 +12,6 @@ public final class ProjectList implements Runnable {
     private final ArrayList<Project> projectList = new ArrayList<Project>();
     private final BufferedReader in;
     private final PrintWriter out;
-
-    private long lastId = 0;
 
     public static void main(String[] args) throws Exception {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -57,10 +52,10 @@ public final class ProjectList implements Runnable {
                 add(commandRest[1]);
                 break;
             case "check":
-                check(commandRest[1], commandRest[2]);
+                check(commandRest[1]);
                 break;
             case "uncheck":
-                uncheck(commandRest[1], commandRest[2]);
+                uncheck(commandRest[1]);
                 break;
             case "help":
                 help();
@@ -74,11 +69,13 @@ public final class ProjectList implements Runnable {
         }
     }
     
+    // deadLine <project name> <task ID> <dd/MM/yyyy>
+    
     private void deadLine(String commandLine){
-    	String[] subcommandRest = commandLine.split(" ", 2);
+    	String[] subcommandRest = commandLine.split(" ", 3);
 
-    	Task tache = this.getTask(subcommandRest[0]);
-    	tache.setDeadLine(subcommandRest[1]);
+    	Task tache = this.getTask(subcommandRest[1], subcommandRest[0]);
+    	tache.setDeadLine(subcommandRest[2]);
     	out.printf("deadLine : %s",tache.getDeadLine());
     	out.println();
     	
@@ -128,13 +125,17 @@ public final class ProjectList implements Runnable {
     }
 
     //Refactoring fait
-    private void check(String projectName, String idString) {
-        setDone(idString, projectName, true);
+    private void check(String commandLine) {
+    	String[] subcommandRest = commandLine.split(" ", 2);
+    	
+        setDone(subcommandRest[0], subcommandRest[1], true);
     }
 
     //Refactoring fait
-    private void uncheck(String projectName, String idString) {
-        setDone(idString, projectName, false);
+    private void uncheck(String commandLine) {
+    	String[] subcommandRest = commandLine.split(" ", 2);
+    	
+    	setDone(subcommandRest[0], subcommandRest[1], false);
     }
     
     //Refactoring fait
@@ -153,7 +154,7 @@ public final class ProjectList implements Runnable {
     }
     
     //Refactoring fait
-    private void setDone(String idString, String projectName, boolean done) {
+    private void setDone(String projectName, String idString, boolean done) {
         int id = Integer.parseInt(idString);
         for (Project projet : projectList) {
             for (Task task : projet.getTasks()) {
@@ -185,8 +186,4 @@ public final class ProjectList implements Runnable {
         out.println();
     }
 
-    //Refactoring fait
-    private long nextId() {
-        return ++lastId;
-    }
 }
