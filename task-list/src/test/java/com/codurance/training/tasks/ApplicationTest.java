@@ -66,6 +66,10 @@ public final class ApplicationTest {
 				"    [ ] 4: SOLID", "    [x] 5: Coupling and Cohesion",
 				"    [x] 6: Primitive Obsession", "    [ ] 7: Outside-In TDD",
 				"    [ ] 8: Interaction-Driven Design", "");
+		
+		execute("deadLine 1 12/12/1900");
+		readLines("deadLine : 12/12/1900");
+		
 
 		execute("quit");
 	}
@@ -79,7 +83,7 @@ public final class ApplicationTest {
 		int length = expectedOutput.length();
 		char[] buffer = new char[length];
 		outReader.read(buffer, 0, length);
-		assertEquals(String.valueOf(buffer), expectedOutput);
+		assertEquals(expectedOutput, String.valueOf(buffer));
 	}
 
 	private void readLines(String... expectedOutput) throws IOException {

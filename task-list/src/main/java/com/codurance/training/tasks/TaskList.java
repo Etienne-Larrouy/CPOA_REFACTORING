@@ -79,7 +79,8 @@ public final class TaskList implements Runnable {
 
     	Task tache = this.getTask(subcommandRest[0]);
     	tache.setDeadLine(subcommandRest[1]);
-    	tache.getDeadLine();
+    	out.printf("deadLine : %s",tache.getDeadLine());
+    	out.println();
     	
     }
     

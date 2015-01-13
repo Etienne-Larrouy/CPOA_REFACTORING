@@ -1,13 +1,14 @@
 package com.codurance.training.tasks;
 
 import java.util.Calendar;
-
+import java.text.SimpleDateFormat;
 
 public final class Task {
     private final long id;
     private final String description;
     private boolean done;
     private Calendar deadLine;
+    private SimpleDateFormat laDate;
     
 
     public Task(long id, String description, boolean done) {
@@ -15,10 +16,11 @@ public final class Task {
         this.description = description;
         this.done = done;
         this.deadLine = Calendar.getInstance();
+        this.laDate = new SimpleDateFormat("dd/MM/yyyy");
     }
 
     public String getDeadLine() {
-        return deadLine.toString();
+        return this.laDate.format(this.deadLine.getTime());
     }
     
     public void setDeadLine(String date) {
@@ -29,8 +31,8 @@ public final class Task {
     		intDate[i] = Integer.parseInt(tabDate[i]);
     	}
     	
-    	deadLine.set(intDate[0], intDate[1], intDate[2]);
-        
+    	this.deadLine.set(intDate[2], intDate[1]-1,intDate[0] );
+    	this.laDate.setCalendar(this.deadLine);
     }
     
     public long getId() {
