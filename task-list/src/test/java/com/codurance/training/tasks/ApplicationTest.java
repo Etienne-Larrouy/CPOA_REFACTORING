@@ -30,8 +30,8 @@ public final class ApplicationTest {
 				new PipedInputStream(inStream)));
 		PrintWriter out = new PrintWriter(new PipedOutputStream(outStream),
 				true);
-		TaskList taskList = new TaskList(in, out);
-		new Thread(taskList).start();
+		ProjectList projectList = new ProjectList(in, out);
+		new Thread(projectList).start();
 	}
 
 	@Test
@@ -54,10 +54,10 @@ public final class ApplicationTest {
 		execute("add task training Outside-In TDD");
 		execute("add task training Interaction-Driven Design");
 
-		execute("check 1");
-		execute("check 3");
-		execute("check 5");
-		execute("check 6");
+		execute("check secrets 1");
+		execute("check secrets 3");
+		execute("check secrets 5");
+		execute("check secrets 6");
 
 		execute("show");
 		readLines("secrets", "    [x] 1: Eat more donuts.",
@@ -67,7 +67,7 @@ public final class ApplicationTest {
 				"    [x] 6: Primitive Obsession", "    [ ] 7: Outside-In TDD",
 				"    [ ] 8: Interaction-Driven Design", "");
 		
-		execute("deadLine 1 12/12/1900");
+		execute("deadLine secrets 1 12/12/1900");
 		readLines("deadLine : 12/12/1900");
 		
 
