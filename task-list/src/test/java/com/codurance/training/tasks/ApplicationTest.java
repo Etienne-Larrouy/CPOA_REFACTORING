@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +21,13 @@ public final class ApplicationTest {
 	private PrintWriter inWriter;
 	private PipedInputStream outStream;
 	private BufferedReader outReader;
+    private SimpleDateFormat todaysDate;
+    private Calendar date;
 
 	@Before
 	public void startApplication() throws IOException {
+		this.date = Calendar.getInstance();
+		todaysDate = new SimpleDateFormat("dd/MM/yyyy");
 		inStream = new PipedOutputStream();
 		inWriter = new PrintWriter(inStream, true);
 		outStream = new PipedInputStream();
@@ -43,8 +49,8 @@ public final class ApplicationTest {
 		execute("add task secrets Destroy all humans.");
 
 		execute("show");
-		readLines("secrets", "    [ ] 1: Eat more donuts.",
-				"    [ ] 2: Destroy all humans.", "");
+		readLines("secrets", "    [ ] 1: Eat more donuts. - No DeadLine",
+				"    [ ] 2: Destroy all humans. - No DeadLine", "");
 
 		execute("add project training");
 		execute("add task training Four Elements of Simple Design");
@@ -60,17 +66,28 @@ public final class ApplicationTest {
 		execute("check training 4");
 
 		execute("show");
-		readLines("secrets", "    [x] 1: Eat more donuts.",
-				"    [ ] 2: Destroy all humans.", "", "training",
-				"    [x] 1: Four Elements of Simple Design",
-				"    [ ] 2: SOLID", "    [x] 3: Coupling and Cohesion",
-				"    [x] 4: Primitive Obsession", "    [ ] 5: Outside-In TDD",
-				"    [ ] 6: Interaction-Driven Design", "");
+		readLines("secrets", "    [x] 1: Eat more donuts. - No DeadLine",
+				"    [ ] 2: Destroy all humans. - No DeadLine", "", "training",
+				"    [x] 1: Four Elements of Simple Design - No DeadLine",
+				"    [ ] 2: SOLID - No DeadLine", "    [x] 3: Coupling and Cohesion - No DeadLine",
+				"    [x] 4: Primitive Obsession - No DeadLine", "    [ ] 5: Outside-In TDD - No DeadLine",
+				"    [ ] 6: Interaction-Driven Design - No DeadLine", "");
 		
 		execute("deadLine secrets 1 12/12/1900");
-		readLines("deadLine : 12/12/1900");
+		execute("deadLine training 1 12/12/1900");
+		execute("deadLine training 5 14/01/2015");
 		
-
+		execute("show");
+		readLines("secrets", "    [x] 1: Eat more donuts. - 12/12/1900",
+				"    [ ] 2: Destroy all humans. - No DeadLine", "", "training",
+				"    [x] 1: Four Elements of Simple Design - 12/12/1900",
+				"    [ ] 2: SOLID - No DeadLine", "    [x] 3: Coupling and Cohesion - No DeadLine", 
+				"    [x] 4: Primitive Obsession - No DeadLine", "    [ ] 5: Outside-In TDD - "+this.todaysDate.format(this.date.getTime()),
+				"    [ ] 6: Interaction-Driven Design - No DeadLine", "");
+		
+		execute("today");
+		readLines("secrets", "","training", "    [14/01/2015] 5: Outside-In TDD", "");
+		
 		execute("quit");
 	}
 
