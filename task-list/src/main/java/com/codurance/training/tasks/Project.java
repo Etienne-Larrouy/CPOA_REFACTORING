@@ -7,36 +7,62 @@ public class Project {
 	private String projectName;
 	private int idTask;
 
+	/**
+	 * Constructeur sans paramètre
+	 */
 	public Project() {
 		this.listTask = new ArrayList<Task>();
 		this.projectName = "";
 		this.idTask = 1;
 	}
 	
+    /**
+     * Constructeur avec paramètre
+     * @param projectName
+     */
     public Project(String projectName) {
     	this.listTask = new ArrayList<Task>();
 		this.projectName = projectName;
 		this.idTask = 1;
 	}    
     
+    /**
+     * Retourne toutes les tâches
+     * @return ArrayList<Task>
+     */
     public ArrayList<Task> getTasks(){
     	return this.listTask;
     }
 
+	/**
+	 * Retourne le nom du projet
+	 * @return String
+	 */
 	public String getProjectName() {
 		return projectName;
 	}
 	
-	private int getLastId(){
+	/**
+	 * Retourne le nouvel ID de tâche
+	 * @return int
+	 */
+	private int getNewId(){
 		return this.idTask;
 	}
 	
+	/**
+	 * Incrémente le prochain ID
+	 */
 	private void setNewId(){
 		this.idTask++;
 	}
 
+	/**
+	 * Permet d'ajouter une tâche
+	 * @param description
+	 */
 	public void addTask(String description) {
-		Task myTask = new Task(getLastId(),description, false);
+		Task myTask = new Task(getNewId(),description, false);
 		
 		listTask.add(myTask);
 		setNewId();

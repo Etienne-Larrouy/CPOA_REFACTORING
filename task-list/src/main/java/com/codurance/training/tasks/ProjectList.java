@@ -19,6 +19,11 @@ public final class ProjectList implements Runnable {
         new ProjectList(in, out).run();
     }
 
+    /**
+     * Constructeur avec paramètres
+     * @param reader
+     * @param writer
+     */
     public ProjectList(BufferedReader reader, PrintWriter writer) {
         this.in = reader;
         this.out = writer;
@@ -41,6 +46,10 @@ public final class ProjectList implements Runnable {
         }
     }
 
+    /**
+     * Permet d'executer la commande reçu en paramètre 
+     * @param commandLine	String récupère la commande
+     */
     private void execute(String commandLine) {
         String[] commandRest = commandLine.split(" ", 2);
         String command = commandRest[0];
@@ -68,9 +77,12 @@ public final class ProjectList implements Runnable {
                 break;
         }
     }
+
     
-    // deadLine <project name> <task ID> <dd/MM/yyyy>
-    
+    /**
+     * Permet de créer une deadLine en fonction d'un projet et d'une tâche
+     * @param commandLine	String récupère les arguments passés en entrée
+     */
     private void deadLine(String commandLine){
     	String[] subcommandRest = commandLine.split(" ", 3);
 
@@ -80,8 +92,10 @@ public final class ProjectList implements Runnable {
     	out.println();
     	
     }
-    
-    //Refactoring fait
+
+    /**
+     * Affiche tous les projets avec leurs tâches en affichant si celles-ci sont terminées.
+     */
     private void show() {
         for (Project projet : projectList) {
             out.println(projet.getProjectName());
@@ -92,6 +106,10 @@ public final class ProjectList implements Runnable {
         }
     }
 
+    /**
+     * Permet d'ajouter un projet ou une tâche
+     * @param commandLine
+     */
     private void add(String commandLine) {
         String[] subcommandRest = commandLine.split(" ", 2);
         String subcommand = subcommandRest[0];
@@ -103,12 +121,19 @@ public final class ProjectList implements Runnable {
         }
     }
 
-    //Refactoring fait
+    /**
+     * Permet d'ajouter un projet
+     * @param name
+     */
     private void addProject(String name) {
     	this.projectList.add(new Project(name));
     }
-    
-    //Refactoring fait
+
+    /**
+     * Permet d'ajouter une tâche
+     * @param project
+     * @param description
+     */
     private void addTask(String project, String description) {
     	boolean trouve = false;
     	for (Project projet : projectList) {
@@ -124,21 +149,32 @@ public final class ProjectList implements Runnable {
         }
     }
 
-    //Refactoring fait
+    /**
+     * Fonction permettant d'identifier une tâche comme accomplie
+     * @param commandLine
+     */
     private void check(String commandLine) {
     	String[] subcommandRest = commandLine.split(" ", 2);
     	
         setDone(subcommandRest[0], subcommandRest[1], true);
     }
 
-    //Refactoring fait
+    /**
+     * Fonction permettant d'identifier une tâche comme non accomplie
+     * @param commandLine
+     */
     private void uncheck(String commandLine) {
     	String[] subcommandRest = commandLine.split(" ", 2);
     	
     	setDone(subcommandRest[0], subcommandRest[1], false);
     }
-    
-    //Refactoring fait
+
+    /**
+     * Permet de retourner une tâche en fonction de son ID et de son projet
+     * @param ID
+     * @param projectName
+     * @return Task
+     */
     private Task getTask(String ID, String projectName){
     	int id = Integer.parseInt(ID);
     	for (Project projet : projectList) {
@@ -152,8 +188,13 @@ public final class ProjectList implements Runnable {
         out.println();
         return null;
     }
-    
-    //Refactoring fait
+
+    /**
+     * Fixe une tâche comme accomplie ou non
+     * @param projectName
+     * @param idString
+     * @param done
+     */
     private void setDone(String projectName, String idString, boolean done) {
         int id = Integer.parseInt(idString);
         for (Project projet : projectList) {
@@ -170,7 +211,9 @@ public final class ProjectList implements Runnable {
         out.println();
     }
 
-  //Refactoring fait
+    /**
+     * Affiche l'aide des commandes
+     */
     private void help() {
         out.println("Commands:");
         out.println("  show");
@@ -182,7 +225,10 @@ public final class ProjectList implements Runnable {
         out.println();
     }
 
-    //Refactoring fait
+    /**
+     * Affiche une commande invalide
+     * @param command
+     */
     private void error(String command) {
         out.printf("I don't know what the command \"%s\" is.", command);
         out.println();
