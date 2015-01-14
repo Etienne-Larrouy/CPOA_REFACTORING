@@ -7,6 +7,7 @@ public final class Task {
     private final long id;
     private final String description;
     private boolean done;
+    private boolean dateDef = false;
     private Calendar deadLine;
     private SimpleDateFormat laDate;
     
@@ -20,10 +21,14 @@ public final class Task {
     }
 
     public String getDeadLine() {
-        return this.laDate.format(this.deadLine.getTime());
+    	if(this.dateDef)
+    		return this.laDate.format(this.deadLine.getTime());
+    	else
+    		return "No DeadLine";
     }
     
     public void setDeadLine(String date) {
+    	this.dateDef = true;
     	int[] intDate = new int[3];
     	String[] tabDate = date.split("/", 3);
     	
