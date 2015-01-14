@@ -113,8 +113,6 @@ public final class ProjectList implements Runnable {
 
     	Task tache = this.getTask(subcommandRest[1], subcommandRest[0]);
     	tache.setDeadLine(subcommandRest[2]);
-    	out.printf("deadLine : %s",tache.getDeadLine());
-    	out.println();
     	
     }
 
@@ -125,7 +123,7 @@ public final class ProjectList implements Runnable {
         for (Project projet : projectList) {
             out.println(projet.getProjectName());
             for (Task task : projet.getTasks()) {
-                out.printf("    [%c] %d: %s%n", (task.isDone() ? 'x' : ' '), task.getId(), task.getDescription());
+                out.printf("    [%c] %d: %s - %s%n", (task.isDone() ? 'x' : ' '), task.getId(), task.getDescription(), task.getDeadLine());
             }
             out.println();
         }
