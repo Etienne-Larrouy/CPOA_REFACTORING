@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public final class ProjectList implements Runnable {
     private static final String QUIT = "quit";
@@ -12,6 +14,9 @@ public final class ProjectList implements Runnable {
     private final ArrayList<Project> projectList = new ArrayList<Project>();
     private final BufferedReader in;
     private final PrintWriter out;
+    private Calendar date;
+    private SimpleDateFormat todaysDate;
+    
 
     public static void main(String[] args) throws Exception {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -27,6 +32,8 @@ public final class ProjectList implements Runnable {
     public ProjectList(BufferedReader reader, PrintWriter writer) {
         this.in = reader;
         this.out = writer;
+        this.date = Calendar.getInstance();
+        this.todaysDate = new SimpleDateFormat("dd/MM/yyyy");
     }
 
     public void run() {
@@ -75,11 +82,27 @@ public final class ProjectList implements Runnable {
             case "delete":
             	delete(commandRest[1]);
             	break;
+            case "today":
+            	this.today();
+            	break;
             default:
                 error(command);
                 break;
         }
     }
+    
+    private void today(){
+ 	   for (Project projet : projectList) {
+ 		   out.println(projet.getProjectName());
+            for (Task task : projet.getTasks()) {
+         	   if(task.getDeadLine().equals(this.todaysDate.format(this.date.getTime()))){
+                    out.printf("    [%s] %d: %s%n", task.getDeadLine(), task.getId(), task.getDescription());
+         	   }
+            }
+            out.println();
+        }
+    }
+
 
 	/**
      * Permet de créer une deadLine en fonction d'un projet et d'une tâche
@@ -180,16 +203,19 @@ public final class ProjectList implements Runnable {
     private Task getTask(String ID, String projectName){
     	int id = Integer.parseInt(ID);
     	for (Project projet : projectList) {
-            for (Task task : projet.getTasks()) {
-                if (task.getId() == id) {
-                    return task;
-                }
-            }
+    		if (projectName.equals(projet.getProjectName())){
+	            for (Task task : projet.getTasks()) {
+	                if (task.getId() == id) {
+	                    return task;
+	                }
+	            }
+    		}
     	}
         out.printf("Could not find a task with an ID of %d.", id);
         out.println();
         return null;
     }
+
 
     /**
      * Fixe une tâche comme accomplie ou non
