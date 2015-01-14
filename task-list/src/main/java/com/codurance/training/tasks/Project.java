@@ -67,5 +67,15 @@ public class Project {
 		listTask.add(myTask);
 		setNewId();
     }
+	
+	/**
+	 * Permet de supprimer la tâche passée en paramètre
+	 * @param idTask
+	 */
+	public void deleteTask(int idTask) {
+		
+		listTask.remove(idTask);
+
+    }
 
 }

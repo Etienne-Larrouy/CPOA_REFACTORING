@@ -72,14 +72,16 @@ public final class ProjectList implements Runnable {
             case "deadLine":
             	deadLine(commandRest[1]);
             	break;
+            case "delete":
+            	delete(commandRest[1]);
+            	break;
             default:
                 error(command);
                 break;
         }
     }
 
-    
-    /**
+	/**
      * Permet de créer une deadLine en fonction d'un projet et d'une tâche
      * @param commandLine	String récupère les arguments passés en entrée
      */
@@ -222,6 +224,7 @@ public final class ProjectList implements Runnable {
         out.println("  deadLine <project name> <task ID> <dd/MM/yyyy>");
         out.println("  check <project name> <task ID>");
         out.println("  uncheck <project name> <task ID>");
+        out.println("  delete <project name> <task ID>");
         out.println();
     }
 
@@ -233,5 +236,44 @@ public final class ProjectList implements Runnable {
         out.printf("I don't know what the command \"%s\" is.", command);
         out.println();
     }
+    
+
+    /**
+     * Permet de supprimer une tâche en vérifiant si le projet et la tâche existe
+     * @param string
+     */
+    private void delete(String commandLine) {
+    	 String[] subcommandRest = commandLine.split(" ", 2);
+    	 int id = Integer.parseInt(subcommandRest[1]);
+    	 
+    	 boolean trouveProjet = false;
+    	 boolean trouveTache = false;
+    	 
+    	 for (Project projet : projectList) {
+    		 if (subcommandRest[0].equals(projet.getProjectName())){
+    			 for (Task task : projet.getTasks()) {
+ 	                if (task.getId() == id) {
+ 	                	
+ 	                	projet.deleteTask(id);
+ 	                	trouveTache = true;
+ 	                }
+    			 }
+    		 }
+    	 }
+    	 
+         if (!trouveProjet) {
+        	 if(!trouveTache){
+	             out.printf("Could not find a task with the id \"%s\".", subcommandRest[1]);
+	             out.println();
+	             return;
+        	 }
+        	 else{
+        		 out.printf("Could not find a project with the name \"%s\".", subcommandRest[0]);
+	             out.println();
+	             return;
+        	 }
+         }
+
+	}
 
 }
