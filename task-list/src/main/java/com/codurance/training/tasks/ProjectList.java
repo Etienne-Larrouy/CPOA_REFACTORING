@@ -278,7 +278,7 @@ public final class ProjectList implements Runnable {
     			 for (Task task : projet.getTasks()) {
  	                if (task.getId() == id) {
  	                	
- 	                	projet.deleteTask(id);
+ 	                	projet.deleteTask(task);
  	                	trouveTache = true;
  	                }
     			 }

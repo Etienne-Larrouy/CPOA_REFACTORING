@@ -72,9 +72,9 @@ public class Project {
 	 * Permet de supprimer la tâche passée en paramètre
 	 * @param idTask
 	 */
-	public void deleteTask(int idTask) {
+	public void deleteTask(Task task) {
 		
-		listTask.remove(idTask);
+		listTask.remove(task.getId());
 
     }
 
