@@ -12,10 +12,12 @@ public final class ProjectList implements Runnable {
     private static final String QUIT = "quit";
 
     private final ArrayList<Project> projectList = new ArrayList<Project>();
+    private final ArrayList<Task> taskList = new ArrayList<Task>();
     private final BufferedReader in;
     private final PrintWriter out;
     private Calendar date;
     private SimpleDateFormat todaysDate;
+    private long lastId = 0;
     
 
     public static void main(String[] args) throws Exception {
@@ -67,6 +69,9 @@ public final class ProjectList implements Runnable {
             case "add":
                 add(commandRest[1]);
                 break;
+            case "link":
+                link(commandRest[1]);
+                break;    
             case "check":
                 check(commandRest[1]);
                 break;
@@ -109,10 +114,10 @@ public final class ProjectList implements Runnable {
      * @param commandLine	String récupère les arguments passés en entrée
      */
     private void deadLine(String commandLine){
-    	String[] subcommandRest = commandLine.split(" ", 3);
+    	String[] subcommandRest = commandLine.split(" ", 2);
 
-    	Task tache = this.getTask(subcommandRest[1], subcommandRest[0]);
-    	tache.setDeadLine(subcommandRest[2]);
+    	Task tache = this.getTask(subcommandRest[0]);
+    	tache.setDeadLine(subcommandRest[1]);
     	
     }
 
@@ -139,8 +144,7 @@ public final class ProjectList implements Runnable {
         if (subcommand.equals("project")) {
             addProject(subcommandRest[1]);
         } else if (subcommand.equals("task")) {
-            String[] projectTask = subcommandRest[1].split(" ", 2);
-            addTask(projectTask[0], projectTask[1]);
+            addTask(subcommandRest[1]);
         }
     }
 
@@ -157,16 +161,26 @@ public final class ProjectList implements Runnable {
      * @param project
      * @param description
      */
-    private void addTask(String project, String description) {
+    private void addTask(String description) {
+    	
+    	taskList.add(new Task(nextId(), description, false));
+    }
+    
+    /**
+     * @param commandLine
+     */
+    private void link(String commandLine) {
+    	String[] subcommandRest = commandLine.split(" ", 2);
     	boolean trouve = false;
+    	
     	for (Project projet : projectList) {
-           if (project.equals(projet.getProjectName())){
-        	   projet.addTask(description);
+           if (subcommandRest[0].equals(projet.getProjectName())){
+        	   projet.addTask(getTask(subcommandRest[1]));
         	   trouve = true;
            }
     	}
         if (!trouve) {
-            out.printf("Could not find a project with the name \"%s\".", project);
+            out.printf("Could not find a project with the name \"%s\".", subcommandRest[0]);
             out.println();
             return;
         }
@@ -177,9 +191,8 @@ public final class ProjectList implements Runnable {
      * @param commandLine
      */
     private void check(String commandLine) {
-    	String[] subcommandRest = commandLine.split(" ", 2);
-    	
-        setDone(subcommandRest[0], subcommandRest[1], true);
+
+        setDone(commandLine, true);
     }
 
     /**
@@ -187,33 +200,9 @@ public final class ProjectList implements Runnable {
      * @param commandLine
      */
     private void uncheck(String commandLine) {
-    	String[] subcommandRest = commandLine.split(" ", 2);
     	
-    	setDone(subcommandRest[0], subcommandRest[1], false);
+    	setDone(commandLine, false);
     }
-
-    /**
-     * Permet de retourner une tâche en fonction de son ID et de son projet
-     * @param ID
-     * @param projectName
-     * @return Task
-     */
-    private Task getTask(String ID, String projectName){
-    	int id = Integer.parseInt(ID);
-    	for (Project projet : projectList) {
-    		if (projectName.equals(projet.getProjectName())){
-	            for (Task task : projet.getTasks()) {
-	                if (task.getId() == id) {
-	                    return task;
-	                }
-	            }
-    		}
-    	}
-        out.printf("Could not find a task with an ID of %d.", id);
-        out.println();
-        return null;
-    }
-
 
     /**
      * Fixe une tâche comme accomplie ou non
@@ -221,18 +210,15 @@ public final class ProjectList implements Runnable {
      * @param idString
      * @param done
      */
-    private void setDone(String projectName, String idString, boolean done) {
+    private void setDone(String idString, boolean done) {
         int id = Integer.parseInt(idString);
-        for (Project projet : projectList) {
-        	if (projectName.equals(projet.getProjectName())){
-	            for (Task task : projet.getTasks()) {
-	                if (task.getId() == id) {
-	                    task.setDone(done);
-	                    return;
-	                }
-	            }
-        	}
+        for (Task task : taskList) {
+        	if (id == task.getId()){
+        		task.setDone(done);
+	            return;
+        	}       
         }
+        
         out.printf("Could not find a task with an ID of %d.", id);
         out.println();
     }
@@ -244,11 +230,11 @@ public final class ProjectList implements Runnable {
         out.println("Commands:");
         out.println("  show");
         out.println("  add project <project name>");
-        out.println("  add task <project name> <task description>");
-        out.println("  deadLine <project name> <task ID> <dd/MM/yyyy>");
-        out.println("  check <project name> <task ID>");
-        out.println("  uncheck <project name> <task ID>");
-        out.println("  delete <project name> <task ID>");
+        out.println("  add task <task description>");
+        out.println("  deadLine <task ID> <dd/MM/yyyy>");
+        out.println("  check <task ID>");
+        out.println("  uncheck <task ID>");
+        out.println("  delete <task ID>");
         out.println();
     }
 
@@ -267,37 +253,52 @@ public final class ProjectList implements Runnable {
      * @param string
      */
     private void delete(String commandLine) {
-    	 String[] subcommandRest = commandLine.split(" ", 2);
-    	 int id = Integer.parseInt(subcommandRest[1]);
+    	 int id = Integer.parseInt(commandLine);
     	 
-    	 boolean trouveProjet = false;
     	 boolean trouveTache = false;
     	 
-    	 for (Project projet : projectList) {
-    		 if (subcommandRest[0].equals(projet.getProjectName())){
-    			 for (Task task : projet.getTasks()) {
- 	                if (task.getId() == id) {
+    	 for (Task task : taskList) {
+    		 if (task.getId() == id) {
  	                	
- 	                	projet.deleteTask(task);
- 	                	trouveTache = true;
- 	                }
-    			 }
-    		 }
+ 	              taskList.remove(task);
+ 	              trouveTache = true;
+ 	         }
+
     	 }
     	 
-         if (!trouveProjet) {
-        	 if(!trouveTache){
-	             out.printf("Could not find a task with the id \"%s\".", subcommandRest[1]);
-	             out.println();
-	             return;
-        	 }
-        	 else{
-        		 out.printf("Could not find a project with the name \"%s\".", subcommandRest[0]);
-	             out.println();
-	             return;
-        	 }
+         if (!trouveTache) {
+        	 out.printf("Could not find a task with the id \"%s\".", id);
+        	 out.println();
+        	 return;
+        	 
          }
 
 	}
+    
+    /**
+     * Permet de retourner une tâche en fonction de son ID
+     * @param ID
+     * @return
+     */
+    private Task getTask(String ID) {
+    	int myId = Integer.parseInt(ID);
+    	Task myTask = null;
+    	
+    	for(Task task : taskList){
+    		if(task.getId() == myId){
+    			myTask = task;
+    		}
+    	}
+    	
+        return myTask;
+    }
+    
+    /**
+     * Retourne le prochain ID
+     * @return
+     */
+    private long nextId() {
+        return ++lastId;
+    }
 
 }
