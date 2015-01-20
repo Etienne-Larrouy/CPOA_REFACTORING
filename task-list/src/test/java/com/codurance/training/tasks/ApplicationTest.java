@@ -75,7 +75,7 @@ public final class ApplicationTest {
 		
 		execute("deadLine secrets 1 12/12/1900");
 		execute("deadLine training 1 12/12/1900");
-		execute("deadLine training 5 14/01/2015");
+		execute("deadLine training 5 "+this.todaysDate.format(this.date.getTime()));
 		
 		execute("show");
 		readLines("secrets", "    [x] 1: Eat more donuts. - 12/12/1900",
@@ -86,7 +86,7 @@ public final class ApplicationTest {
 				"    [ ] 6: Interaction-Driven Design - No DeadLine", "");
 		
 		execute("today");
-		readLines("secrets", "","training", "    [14/01/2015] 5: Outside-In TDD", "");
+		readLines("secrets", "","training", "    ["+this.todaysDate.format(this.date.getTime())+"] 5: Outside-In TDD", "");
 		
 		execute("quit");
 	}
