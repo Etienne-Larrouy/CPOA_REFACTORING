@@ -42,14 +42,14 @@ public final class ApplicationTest {
 
 	@Test
 	public void itWorks() throws IOException {
-		execute("show");
 
 		execute("add project secrets");
 		execute("add task secrets Eat more donuts.");
 		execute("add task secrets Destroy all humans.");
 
-		execute("show");
-		readLines("secrets", "    [ ] 1: Eat more donuts. - No DeadLine",
+		execute("view by project");
+		readLines("secrets",
+				"    [ ] 1: Eat more donuts. - No DeadLine",
 				"    [ ] 2: Destroy all humans. - No DeadLine", "");
 
 		execute("add project training");
@@ -60,33 +60,53 @@ public final class ApplicationTest {
 		execute("add task training Outside-In TDD");
 		execute("add task training Interaction-Driven Design");
 
-		execute("check secrets 1");
-		execute("check training 1");
-		execute("check training 3");
-		execute("check training 4");
+		execute("check 1");
+		execute("check 3");
+		execute("check 5");
+		execute("check 6");
 
-		execute("show");
-		readLines("secrets", "    [x] 1: Eat more donuts. - No DeadLine",
-				"    [ ] 2: Destroy all humans. - No DeadLine", "", "training",
-				"    [x] 1: Four Elements of Simple Design - No DeadLine",
-				"    [ ] 2: SOLID - No DeadLine", "    [x] 3: Coupling and Cohesion - No DeadLine",
-				"    [x] 4: Primitive Obsession - No DeadLine", "    [ ] 5: Outside-In TDD - No DeadLine",
-				"    [ ] 6: Interaction-Driven Design - No DeadLine", "");
+		execute("view by project");
+		readLines("secrets", 
+				"    [ ] 2: Destroy all humans. - No DeadLine",
+				"    [x] 1: Eat more donuts. - No DeadLine",
+				"", "training",
+				"    [ ] 4: SOLID - No DeadLine",
+				"    [ ] 7: Outside-In TDD - No DeadLine",
+				"    [ ] 8: Interaction-Driven Design - No DeadLine",
+				"    [x] 3: Four Elements of Simple Design - No DeadLine",
+				"    [x] 5: Coupling and Cohesion - No DeadLine",
+				"    [x] 6: Primitive Obsession - No DeadLine","");
 		
-		execute("deadLine secrets 1 12/12/1900");
-		execute("deadLine training 1 12/12/1900");
-		execute("deadLine training 5 "+this.todaysDate.format(this.date.getTime()));
+		execute("deadLine 1 12/12/1900");
+		execute("deadLine 3 12/12/1900");
+		execute("deadLine 7 "+this.todaysDate.format(this.date.getTime()));
 		
-		execute("show");
-		readLines("secrets", "    [x] 1: Eat more donuts. - 12/12/1900",
-				"    [ ] 2: Destroy all humans. - No DeadLine", "", "training",
-				"    [x] 1: Four Elements of Simple Design - 12/12/1900",
-				"    [ ] 2: SOLID - No DeadLine", "    [x] 3: Coupling and Cohesion - No DeadLine", 
-				"    [x] 4: Primitive Obsession - No DeadLine", "    [ ] 5: Outside-In TDD - "+this.todaysDate.format(this.date.getTime()),
-				"    [ ] 6: Interaction-Driven Design - No DeadLine", "");
+		execute("view by project");
+		readLines("secrets",
+				"    [ ] 2: Destroy all humans. - No DeadLine",
+				"    [x] 1: Eat more donuts. - 12/12/1900","",
+				"training",		
+				"    [ ] 4: SOLID - No DeadLine",
+				"    [ ] 7: Outside-In TDD - "+this.todaysDate.format(this.date.getTime()),
+				"    [ ] 8: Interaction-Driven Design - No DeadLine",
+				"    [x] 3: Four Elements of Simple Design - 12/12/1900",
+				"    [x] 5: Coupling and Cohesion - No DeadLine",
+				"    [x] 6: Primitive Obsession - No DeadLine","");
 		
 		execute("today");
-		readLines("secrets", "","training", "    ["+this.todaysDate.format(this.date.getTime())+"] 5: Outside-In TDD", "");
+		readLines("secrets", "","training", "    ["+this.todaysDate.format(this.date.getTime())+"] 7: Outside-In TDD", "");
+		
+		execute("view by date");
+		readLines(
+				"    1: Eat more donuts. - "+this.todaysDate.format(this.date.getTime()),
+				"    2: Destroy all humans. - "+this.todaysDate.format(this.date.getTime()),
+				"    3: Four Elements of Simple Design - "+this.todaysDate.format(this.date.getTime()),
+				"    4: SOLID - "+this.todaysDate.format(this.date.getTime()),
+				"    5: Coupling and Cohesion - "+this.todaysDate.format(this.date.getTime()),
+				"    6: Primitive Obsession - "+this.todaysDate.format(this.date.getTime()),
+				"    7: Outside-In TDD - "+this.todaysDate.format(this.date.getTime()),
+				"    8: Interaction-Driven Design - "+this.todaysDate.format(this.date.getTime()),"");
+		
 		
 		execute("quit");
 	}

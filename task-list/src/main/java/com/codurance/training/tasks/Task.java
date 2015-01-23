@@ -18,6 +18,12 @@ public final class Task extends Observable implements Comparable<Task>{
     private Calendar date;
     private SimpleDateFormat dateCreation;
  
+    /**
+     * Conctructeur paramétré
+     * @param id
+     * @param description
+     * @param done
+     */
     public Task(long id, String description, boolean done) {
         this.id = id;
         this.description = description;
@@ -31,6 +37,7 @@ public final class Task extends Observable implements Comparable<Task>{
 
     /**
      * Retourne un string de la date de deadLine
+     * @return deadLine
      */
     public String getSDeadLine() {
     	if(this.dateDef)
@@ -39,14 +46,25 @@ public final class Task extends Observable implements Comparable<Task>{
     		return "No DeadLine";
     }
     
+    /**
+     * Retourne la deadLine
+     * @return Calendar
+     */
     public Calendar getDeadLine() {
     	return this.deadLine;
     }
     
+    /**
+     * Retourne un string de la date de création d'une tâche
+     * @return String
+     */
     public String getSDateCreation() {
     		return this.dateCreation.format(this.date.getTime());
     }
     
+    /**
+     * @param date
+     */
     public void setDeadLine(String date) {
     	this.dateDef = true;
     	int[] intDate = new int[3];
@@ -60,14 +78,23 @@ public final class Task extends Observable implements Comparable<Task>{
     	this.dateDeadline.setCalendar(this.deadLine);
     }
     
+    /**
+     * @return id
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * @return description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * @return done
+     */
     public boolean isDone() {
         return done;
     }

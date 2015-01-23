@@ -10,7 +10,7 @@ public class Project implements Observer{
 	private String projectName;
 
 	/**
-	 * Constructeur sans param√®tre
+	 * Conctructeur non paramÈtrÈ
 	 */
 	public Project() {
 		this.listTaskDone = new ArrayList<Task>();
@@ -19,7 +19,7 @@ public class Project implements Observer{
 	}
 	
     /**
-     * Constructeur avec param√®tre
+     * Conctructeur paramÈtrÈ
      * @param projectName
      */
     public Project(String projectName) {
@@ -29,7 +29,7 @@ public class Project implements Observer{
 	}    
     
     /**
-     * Retourne toutes les t√¢ches finies
+     * Retourne toutes les t‚ches finies
      * @return ArrayList<Task>
      */
     public ArrayList<Task> getTasksDone(){
@@ -37,7 +37,7 @@ public class Project implements Observer{
     }
     
     /**
-     * Retourne toutes les t√¢ches non finies
+     * Retourne toutes les t‚ches non finies
      * @return ArrayList<Task>
      */
     public ArrayList<Task> getTasksNotDone(){
@@ -53,8 +53,8 @@ public class Project implements Observer{
 	}
 
 	/**
-	 * Permet d'ajouter une t√¢che
-	 * @param description
+	 * Permet d'ajouter une t‚che
+	 * @param newTask
 	 */
 	public void addTask(Task newTask) {
 		
@@ -75,7 +75,7 @@ public class Project implements Observer{
 				this.listTaskNotDone.add(laTache);
 			}
 		} else {
-			System.out.println("Erreur : un bool√©en est requis");
+			System.out.println("Erreur : un boolÈen est requis");
 		}
 	}
 

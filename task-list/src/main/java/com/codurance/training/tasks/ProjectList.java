@@ -39,6 +39,9 @@ public final class ProjectList implements Runnable {
         this.todaysDate = new SimpleDateFormat("dd/MM/yyyy");
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
     public void run() {
         while (true) {
             out.print("> ");
@@ -148,8 +151,9 @@ public final class ProjectList implements Runnable {
      */
     private void viewByDate() {
     	for(Task task : taskList) {
-    		out.printf(" %d: %s - %s%n", task.getId(), task.getDescription(), task.getSDateCreation());
+    		out.printf("    %d: %s - %s%n", task.getId(), task.getDescription(), task.getSDateCreation());
     	}
+    	out.println();
     }
     
     /**
@@ -159,8 +163,9 @@ public final class ProjectList implements Runnable {
         ArrayList<Task> tempList = taskList;
         
         //Supprimme les tâches n'ayant pas de deadLine
-        for (int i=0 ; i< tempList.size() ; i++) {
-        	if(tempList.get(i).getSDeadLine().equals("No DeadLine"))
+        for (int i=0 ; i< tempList.size()+1 ; i++) {
+        	
+        	if(tempList.get(i).getSDeadLine().contains("No DeadLine"))
        		 	tempList.remove(i);
        }
         
@@ -169,7 +174,7 @@ public final class ProjectList implements Runnable {
         for (Task task : tempList) {
         	 out.printf(" %d: %s - %s%n", task.getId(), task.getDescription(), task.getSDeadLine());
         }
-        
+        out.println();
     }
     
     /**
@@ -344,15 +349,18 @@ public final class ProjectList implements Runnable {
     	 int id = Integer.parseInt(commandLine);
     	 
     	 boolean trouveTache = false;
+
+    	 Task tempTask = null;
     	 
     	 for (Task task : taskList) {
     		 if (task.getId() == id) {
- 	                	
- 	              taskList.remove(task);
+	
+    			 tempTask = task;
  	              trouveTache = true;
- 	         }
-
+    		 }
     	 }
+    	 
+    	 taskList.remove(tempTask);
     	 
          if (!trouveTache) {
         	 out.printf("Could not find a task with the id \"%s\".", id);
@@ -366,7 +374,7 @@ public final class ProjectList implements Runnable {
     /**
      * Permet de retourner une tâche en fonction de son ID
      * @param ID
-     * @return
+     * @return Task
      */
     private Task getTask(String ID) {
     	int myId = Integer.parseInt(ID);
@@ -383,7 +391,7 @@ public final class ProjectList implements Runnable {
     
     /**
      * Retourne le prochain ID de tâche
-     * @return
+     * @return ID
      */
     private long nextId() {
         return ++lastId;
