@@ -1,17 +1,21 @@
 package com.codurance.training.tasks;
 
 import java.util.Calendar;
+import java.util.Observable;
 import java.text.SimpleDateFormat;
 
-public final class Task {
-    private final long id;
+
+
+public final class Task extends Observable{
+
+
+	private final long id;
     private final String description;
     private boolean done;
     private boolean dateDef = false;
     private Calendar deadLine;
     private SimpleDateFormat laDate;
-    
-
+ 
     public Task(long id, String description, boolean done) {
         this.id = id;
         this.description = description;
@@ -54,5 +58,14 @@ public final class Task {
 
     public void setDone(boolean done) {
         this.done = done;
+        this.setChanged();
+        this.notifyObservers(done);
+        
     }
+    
+    //Permet de lier une tâche à un projet
+    public void link(Project obs){
+    	this.addObserver(obs);
+    }
+    
 }
