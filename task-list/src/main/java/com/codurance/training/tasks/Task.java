@@ -14,21 +14,30 @@ public final class Task extends Observable{
     private boolean done;
     private boolean dateDef = false;
     private Calendar deadLine;
-    private SimpleDateFormat laDate;
+    private SimpleDateFormat dateDeadline;
+    private Calendar date;
+    private SimpleDateFormat dateCreation;
  
     public Task(long id, String description, boolean done) {
         this.id = id;
         this.description = description;
         this.done = done;
         this.deadLine = Calendar.getInstance();
-        this.laDate = new SimpleDateFormat("dd/MM/yyyy");
+        this.dateDeadline = new SimpleDateFormat("dd/MM/yyyy");
+        this.date = Calendar.getInstance();
+        this.dateCreation = new SimpleDateFormat("dd/MM/yyyy");
+        this.date.setTime(this.date.getTime());
     }
 
     public String getDeadLine() {
     	if(this.dateDef)
-    		return this.laDate.format(this.deadLine.getTime());
+    		return this.dateDeadline.format(this.deadLine.getTime());
     	else
     		return "No DeadLine";
+    }
+    
+    public String getDateCreation() {
+    		return this.dateCreation.format(this.date.getTime());
     }
     
     public void setDeadLine(String date) {
@@ -41,7 +50,7 @@ public final class Task extends Observable{
     	}
     	
     	this.deadLine.set(intDate[2], intDate[1]-1,intDate[0] );
-    	this.laDate.setCalendar(this.deadLine);
+    	this.dateDeadline.setCalendar(this.deadLine);
     }
     
     public long getId() {
@@ -57,10 +66,9 @@ public final class Task extends Observable{
     }
 
     public void setDone(boolean done) {
-        this.done = done;
-        this.setChanged();
-        this.notifyObservers(done);
-        
+    		this.done = done;
+	        this.setChanged();
+	        this.notifyObservers(done);
     }
     
     //Permet de lier une tâche à un projet
