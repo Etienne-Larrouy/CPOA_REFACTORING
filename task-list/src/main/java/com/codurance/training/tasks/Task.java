@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 
 
 
-public final class Task extends Observable{
+public final class Task extends Observable implements Comparable<Task>{
 
 
 	private final long id;
@@ -29,11 +29,18 @@ public final class Task extends Observable{
         this.date.setTime(this.date.getTime());
     }
 
-    public String getDeadLine() {
+    /**
+     * Retourne un string de la date de deadLine
+     */
+    public String getSDeadLine() {
     	if(this.dateDef)
     		return this.dateDeadline.format(this.deadLine.getTime());
     	else
     		return "No DeadLine";
+    }
+    
+    public Calendar getDeadLine() {
+    	return this.deadLine;
     }
     
     public String getDateCreation() {
@@ -65,15 +72,30 @@ public final class Task extends Observable{
         return done;
     }
 
+    /**
+     * Fixe une tâche comme terminée ou non terminée
+     * @param done
+     */
     public void setDone(boolean done) {
     		this.done = done;
 	        this.setChanged();
 	        this.notifyObservers(done);
     }
     
-    //Permet de lier une tÃ¢che Ã  un projet
+    
+    /**
+     * Permet de lier une tache a un projet
+     * @param obs
+     */
     public void link(Project obs){
     	this.addObserver(obs);
+    }
+    
+    /* (non-Javadoc)
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Task o) {
+        return getDeadLine().getTime().compareTo(o.getDeadLine().getTime());
     }
     
 }

@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 
 public final class ProjectList implements Runnable {
     private static final String QUIT = "quit";
@@ -63,9 +64,6 @@ public final class ProjectList implements Runnable {
         String[] commandRest = commandLine.split(" ", 2);
         String command = commandRest[0];
         switch (command) {
-            case "show":
-                show();
-                break;
             case "add":
                 add(commandRest[1]);
                 break;
@@ -90,18 +88,24 @@ public final class ProjectList implements Runnable {
             case "today":
             	this.today();
             	break;
+            case "view":
+            	this.viewBy(commandRest[1]);
+            	break;
             default:
                 error(command);
                 break;
         }
     }
     
+    /**
+     * Permet d'afficher les tâches dont la deadline est aujourd'hui
+     */
     private void today(){
  	   for (Project projet : projectList) {
  		   out.println(projet.getProjectName());
             for (Task task : projet.getTasksNotDone()) {
-         	   if(task.getDeadLine().equals(this.todaysDate.format(this.date.getTime()))){
-                    out.printf("    [%s] %d: %s%n", task.getDeadLine(), task.getId(), task.getDescription());
+         	   if(task.getSDeadLine().equals(this.todaysDate.format(this.date.getTime()))){
+                    out.printf("    [%s] %d: %s%n", task.getSDeadLine(), task.getId(), task.getDescription());
          	   }
             }
             out.println();
@@ -120,18 +124,57 @@ public final class ProjectList implements Runnable {
     	tache.setDeadLine(subcommandRest[1]);
     	
     }
-
+    
+    /**
+     * Permet d'afficher les tâches en fonction de date, deadline ou project
+     */
+    private void viewBy(String commandLine) {
+    	String[] subcommandRest = commandLine.split(" ", 2);
+        String subcommand = subcommandRest[1];
+        
+        if (subcommand.equals("date")) {
+            viewByDate();
+            
+        } else if (subcommand.equals("deadline")) {
+            viewByDeadline();
+            
+        } else if (subcommand.equals("project")) {
+        	viewByProject();
+        }
+    }
+    
+    /**
+     * Affiche toutes les tâches en fonction de leur date de création
+     */
+    private void viewByDate() {
+        
+    }
+    
+    /**
+     * Affiche toutes les tâches en fonction de leur deadLine.
+     */
+    private void viewByDeadline() {
+        ArrayList<Task> tempList = taskList;
+        
+        Collections.sort(tempList);
+        
+        for (Task task : tempList) {
+        	 out.printf(" %d: %s - %s%n", task.getId(), task.getDescription(), task.getSDeadLine());
+        }
+        
+    }
+    
     /**
      * Affiche tous les projets avec leurs tâches en affichant si celles-ci sont terminées.
      */
-    private void show() {
+    private void viewByProject() {
         for (Project projet : projectList) {
             out.println(projet.getProjectName());
             for (Task task : projet.getTasksNotDone()) {
-                out.printf("    [ ] %d: %s - %s%n", task.getId(), task.getDescription(), task.getDeadLine());
+                out.printf("    [ ] %d: %s - %s%n", task.getId(), task.getDescription(), task.getSDeadLine());
             }
             for (Task task : projet.getTasksDone()) {
-                out.printf("    [x] %d: %s - %s%n", task.getId(), task.getDescription(), task.getDeadLine());
+                out.printf("    [x] %d: %s - %s%n", task.getId(), task.getDescription(), task.getSDeadLine());
             }
             out.println();
         }
@@ -187,6 +230,7 @@ public final class ProjectList implements Runnable {
     }
     
     /**
+     * Permet de lier une tâche existante à un projet
      * @param commandLine
      */
     private void link(String commandLine) {
@@ -249,7 +293,6 @@ public final class ProjectList implements Runnable {
      */
     private void help() {
         out.println("Commands:");
-        out.println("  show");
         out.println("  add project <project name>");
         out.println("  add task <project name> <task description>");
         out.println("  link <project name> <task description>");
@@ -257,6 +300,9 @@ public final class ProjectList implements Runnable {
         out.println("  check <task ID>");
         out.println("  uncheck <task ID>");
         out.println("  delete <task ID>");
+        out.println("  view by date");
+        out.println("  view by deadline");
+        out.println("  view by project");
         out.println();
     }
 
@@ -316,11 +362,12 @@ public final class ProjectList implements Runnable {
     }
     
     /**
-     * Retourne le prochain ID
+     * Retourne le prochain ID de tâche
      * @return
      */
     private long nextId() {
         return ++lastId;
     }
-
+    
+    
 }
