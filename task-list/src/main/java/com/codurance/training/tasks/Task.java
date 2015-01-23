@@ -43,7 +43,7 @@ public final class Task extends Observable implements Comparable<Task>{
     	return this.deadLine;
     }
     
-    public String getDateCreation() {
+    public String getSDateCreation() {
     		return this.dateCreation.format(this.date.getTime());
     }
     

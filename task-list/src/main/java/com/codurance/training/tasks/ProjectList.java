@@ -147,7 +147,9 @@ public final class ProjectList implements Runnable {
      * Affiche toutes les tâches en fonction de leur date de création
      */
     private void viewByDate() {
-        
+    	for(Task task : taskList) {
+    		out.printf(" %d: %s - %s%n", task.getId(), task.getDescription(), task.getSDateCreation());
+    	}
     }
     
     /**
@@ -155,6 +157,12 @@ public final class ProjectList implements Runnable {
      */
     private void viewByDeadline() {
         ArrayList<Task> tempList = taskList;
+        
+        //Supprimme les tâches n'ayant pas de deadLine
+        for (int i=0 ; i< tempList.size() ; i++) {
+        	if(tempList.get(i).getSDeadLine().equals("No DeadLine"))
+       		 	tempList.remove(i);
+       }
         
         Collections.sort(tempList);
         
@@ -165,7 +173,7 @@ public final class ProjectList implements Runnable {
     }
     
     /**
-     * Affiche tous les projets avec leurs tâches en affichant si celles-ci sont terminées.
+     * Affiche tous les projets avec leurs tâches en affichant si elles sont terminées.
      */
     private void viewByProject() {
         for (Project projet : projectList) {
@@ -186,13 +194,25 @@ public final class ProjectList implements Runnable {
      */
     private void add(String commandLine) {
         String[] subcommandRest = commandLine.split(" ", 2);
-        String subcommand = subcommandRest[0];
-        if (subcommand.equals("project")) {
-            addProject(subcommandRest[1]);
-        } else if (subcommand.equals("task")) {
-        	String[] projectTask = subcommandRest[1].split(" ", 2);
-            addTask(projectTask[0], projectTask[1]);
-        }
+        
+        if(subcommandRest.length < 2){
+        	out.printf("Not enough arguments ...");
+        	out.println();
+        }else {
+	        String subcommand = subcommandRest[0];
+	        if (subcommand.equals("project")) {
+	            addProject(subcommandRest[1]);
+	        } else if (subcommand.equals("task")) {
+	        	String[] projectTask = subcommandRest[1].split(" ", 2);
+	        	
+	        	if(projectTask.length >= 2)
+	        		addTask(projectTask[0], projectTask[1]);
+	        	else{
+	        		out.printf("Not enough arguments ...");
+	        		out.println();
+	        	}
+	        }
+    	}
     }
 
     /**
