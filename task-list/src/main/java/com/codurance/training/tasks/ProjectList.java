@@ -99,7 +99,7 @@ public final class ProjectList implements Runnable {
     private void today(){
  	   for (Project projet : projectList) {
  		   out.println(projet.getProjectName());
-            for (Task task : projet.getTasks()) {
+            for (Task task : projet.getTasksNotDone()) {
          	   if(task.getDeadLine().equals(this.todaysDate.format(this.date.getTime()))){
                     out.printf("    [%s] %d: %s%n", task.getDeadLine(), task.getId(), task.getDescription());
          	   }
@@ -127,7 +127,7 @@ public final class ProjectList implements Runnable {
     private void show() {
         for (Project projet : projectList) {
             out.println(projet.getProjectName());
-            for (Task task : projet.getTasks()) {
+            for (Task task : projet.getTasksNotDone()) {
                 out.printf("    [%c] %d: %s - %s%n", (task.isDone() ? 'x' : ' '), task.getId(), task.getDescription(), task.getDeadLine());
             }
             out.println();
@@ -144,7 +144,8 @@ public final class ProjectList implements Runnable {
         if (subcommand.equals("project")) {
             addProject(subcommandRest[1]);
         } else if (subcommand.equals("task")) {
-            addTask(subcommandRest[1]);
+        	String[] projectTask = subcommandRest[1].split(" ", 2);
+            addTask(projectTask[0], projectTask[1]);
         }
     }
 
@@ -161,9 +162,22 @@ public final class ProjectList implements Runnable {
      * @param project
      * @param description
      */
-    private void addTask(String description) {
+    private void addTask(String project, String description) {
+    	boolean trouve = false;
     	
-    	taskList.add(new Task(nextId(), description, false));
+    	for (Project projet : projectList) {
+           if (project.equals(projet.getProjectName())){
+        	   taskList.add(new Task(nextId(), description, false));
+        	   projet.addTask(getTask(description));
+        	   trouve = true;
+        	   getTask(description).link(projet);
+           }
+    	}
+        if (!trouve) {
+            out.printf("Could not find a project with the name \"%s\".", project);
+            out.println();
+            return;
+        }
     }
     
     /**
@@ -177,6 +191,7 @@ public final class ProjectList implements Runnable {
            if (subcommandRest[0].equals(projet.getProjectName())){
         	   projet.addTask(getTask(subcommandRest[1]));
         	   trouve = true;
+        	   getTask(subcommandRest[1]).link(projet);
            }
     	}
         if (!trouve) {
