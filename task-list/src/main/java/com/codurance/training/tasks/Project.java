@@ -1,37 +1,47 @@
 package com.codurance.training.tasks;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Project {
-	private ArrayList<Task> listTask;
+public class Project implements Observer{
+	private ArrayList<Task> listTaskDone;
+	private ArrayList<Task> listTaskNotDone;
 	private String projectName;
-	private int idTask;
 
 	/**
-	 * Constructeur sans paramËtre
+	 * Constructeur sans param√®tre
 	 */
 	public Project() {
-		this.listTask = new ArrayList<Task>();
+		this.listTaskDone = new ArrayList<Task>();
+		this.listTaskNotDone = new ArrayList<Task>();
 		this.projectName = "";
-		this.idTask = 1;
 	}
 	
     /**
-     * Constructeur avec paramËtre
+     * Constructeur avec param√®tre
      * @param projectName
      */
     public Project(String projectName) {
-    	this.listTask = new ArrayList<Task>();
+    	this.listTaskDone = new ArrayList<Task>();
+    	this.listTaskNotDone = new ArrayList<Task>();
 		this.projectName = projectName;
-		this.idTask = 1;
 	}    
     
     /**
-     * Retourne toutes les t‚ches
+     * Retourne toutes les t√¢ches finies
      * @return ArrayList<Task>
      */
-    public ArrayList<Task> getTasks(){
-    	return this.listTask;
+    public ArrayList<Task> getTasksDone(){
+    	return this.listTaskDone;
+    }
+    
+    /**
+     * Retourne toutes les t√¢ches non finies
+     * @return ArrayList<Task>
+     */
+    public ArrayList<Task> getTasksNotDone(){
+    	return this.listTaskNotDone;
     }
 
 	/**
@@ -41,41 +51,33 @@ public class Project {
 	public String getProjectName() {
 		return projectName;
 	}
-	
-	/**
-	 * Retourne le nouvel ID de t‚che
-	 * @return int
-	 */
-	private int getNewId(){
-		return this.idTask;
-	}
-	
-	/**
-	 * IncrÈmente le prochain ID
-	 */
-	private void setNewId(){
-		this.idTask++;
-	}
 
 	/**
-	 * Permet d'ajouter une t‚che
+	 * Permet d'ajouter une t√¢che
 	 * @param description
 	 */
-	public void addTask(String description) {
-		Task myTask = new Task(getNewId(),description, false);
+	public void addTask(Task newTask) {
 		
-		listTask.add(myTask);
-		setNewId();
+		listTaskNotDone.add(newTask);
     }
-	
-	/**
-	 * Permet de supprimer la t‚che passÈe en paramËtre
-	 * @param idTask
-	 */
-	public void deleteTask(Task task) {
-		
-		listTask.remove(task.getId());
 
-    }
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		if (arg1 instanceof Boolean) {
+			boolean done = (Boolean)arg1;
+			Task laTache = (Task)arg0;
+			if(done == true){
+				this.listTaskNotDone.remove(arg0);
+				this.listTaskDone.add(laTache);
+			}
+			else{
+				this.listTaskDone.remove(arg0);
+				this.listTaskNotDone.add(laTache);
+			}
+		} else {
+			System.out.println("Erreur : un bool√©en est requis");
+		}
+	}
+
 
 }
