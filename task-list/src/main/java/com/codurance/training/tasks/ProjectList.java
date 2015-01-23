@@ -128,7 +128,10 @@ public final class ProjectList implements Runnable {
         for (Project projet : projectList) {
             out.println(projet.getProjectName());
             for (Task task : projet.getTasksNotDone()) {
-                out.printf("    [%c] %d: %s - %s%n", (task.isDone() ? 'x' : ' '), task.getId(), task.getDescription(), task.getDeadLine());
+                out.printf("    [ ] %d: %s - %s%n", task.getId(), task.getDescription(), task.getDeadLine());
+            }
+            for (Task task : projet.getTasksDone()) {
+                out.printf("    [x] %d: %s - %s%n", task.getId(), task.getDescription(), task.getDeadLine());
             }
             out.println();
         }
@@ -165,12 +168,15 @@ public final class ProjectList implements Runnable {
     private void addTask(String project, String description) {
     	boolean trouve = false;
     	
+    	
     	for (Project projet : projectList) {
            if (project.equals(projet.getProjectName())){
-        	   taskList.add(new Task(nextId(), description, false));
-        	   projet.addTask(getTask(description));
+        	   
+        	   Task myTask = new Task(nextId(), description, false);
+        	   taskList.add(myTask);
+        	   projet.addTask(myTask);
         	   trouve = true;
-        	   getTask(description).link(projet);
+        	   myTask.link(projet);
            }
     	}
         if (!trouve) {
@@ -245,7 +251,8 @@ public final class ProjectList implements Runnable {
         out.println("Commands:");
         out.println("  show");
         out.println("  add project <project name>");
-        out.println("  add task <task description>");
+        out.println("  add task <project name> <task description>");
+        out.println("  link <project name> <task description>");
         out.println("  deadLine <task ID> <dd/MM/yyyy>");
         out.println("  check <task ID>");
         out.println("  uncheck <task ID>");
